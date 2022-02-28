@@ -3,9 +3,9 @@ import { createSession, getUserByEmail } from './_db'
 import { serialize } from 'cookie'
 
 /** @type {import('@sveltejs/kit').RequestHandler} */
-// @ts-ignore
-export async function post({ body: { email, password } }) {
-  const user = await getUserByEmail(email)
+export async function post({ request }) {
+	const { email, password } = await request.json();
+	const user = await getUserByEmail(email);
 
   // ⚠️ CAUTION: Do not store a plain passwords. Use proper hashing and salting.
   if (!user || user.password !== password) {
@@ -30,7 +30,9 @@ export async function post({ body: { email, password } }) {
       }),
     },
     body: {
-      message: 'Successfully signed in',
-    },
-  }
+			user: {
+				email,
+			},
+		},
+	};
 }

@@ -1,6 +1,9 @@
 <script>
   import SignInForm from '$lib/components/SignInForm.svelte'
-  let error
+	import { goto } from '$app/navigation';
+	import { session } from '$app/stores';
+
+	let error;
 
   async function handleSubmit({ detail: { email, password } }) {
     const response = await fetch('/api/sign-in', {
@@ -9,16 +12,17 @@
       headers: {
         'Content-Type': 'application/json',
       },
-    })
+		});
 
-    if (!response.ok) {
-      error = (await response.json()).message
-      return
-    }
-
-    // @ts-ignore
-    window.location = '/protected'
-  }
+		const body = await response.json();
+		if (response.ok) {
+			// session from getSession hook will otherwise not be set before navigation
+			// that would trigger redirect from /protected back to /sign-in
+			$session = body;
+			await goto('/protected');
+		}
+		error = body.message;
+	}
 </script>
 
 <h1 class="text-2xl font-semibold text-center">Sign In</h1>

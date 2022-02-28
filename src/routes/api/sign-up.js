@@ -1,9 +1,10 @@
-import { serialize } from 'cookie'
-import { createSession, getUserByEmail, registerUser } from './_db'
+import { createSession, getUserByEmail, registerUser } from './_db';
+import { serialize } from 'cookie';
 
 /** @type {import('@sveltejs/kit').RequestHandler} */
 // @ts-ignore
-export async function post({ body: { email, password } }) {
+export async function post({ request }) {
+	const { email, password } = await request.json();
   const user = await getUserByEmail(email)
 
   if (user) {
@@ -34,7 +35,9 @@ export async function post({ body: { email, password } }) {
       }),
     },
     body: {
-      message: 'Successfully signed up',
-    },
-  }
+			user: {
+				email,
+			},
+		},
+	};
 }

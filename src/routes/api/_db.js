@@ -6,7 +6,7 @@ const users = [
   {
     email: 'mail@example.com',
     // ⚠️ CAUTION: Do not store a plain password like this. Use proper hashing and salting.
-    password: 'password',
+    password: 'thisisnotsecret',
   },
 ]
 
@@ -19,7 +19,7 @@ export const getUserByEmail = async (email) => {
 }
 
 export const registerUser = (user) => {
-  const existingUser = user.find((u) => u.email === user.email)
+  const existingUser = users.find((u) => u.email === user.email)
   if (!!existingUser) return Promise.reject(new Error('User already exists'))
 
   users.push(user)
@@ -48,5 +48,5 @@ export const removeSession = (id) => {
   if (!session) return Promise.reject(new Error('Session not found'))
 
   sessions = sessions.filter((session) => session.id !== id)
-  return Promise.resolve(sessions)
+  return Promise.resolve(session)
 }
